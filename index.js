@@ -18,14 +18,23 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const URL = process.env.MONGODB_URI;
 
+// Middleware my changes ----abhi
+app.use(
+  cors({
+    origin: ["https://education-management-app-react-atharv.vercel.app/"],
+    methods: ["POST", "GET", "PUT", "DELETE"],
+    credentials: true,
+  })
+); // Enable CORS
+app.use(express.json()); // Parse JSON bodies
 mongoose
   .connect(URL)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// Middleware
-app.use(express.json()); // Parse JSON bodies
-app.use(cors()); // Enable CORS
+// // Middleware
+// app.use(express.json()); // Parse JSON bodies
+// app.use(cors()); // Enable CORS
 
 // Routes
 app.use("/api/", courseRoutes);
