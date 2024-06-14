@@ -1,0 +1,21 @@
+# Dependency directories
+node_modules/
+
+# Environment variables file (if you have one)
+.env
+
+# Log files
+*.log
+
+# Built files (if you're transpiling TypeScript/ES6+)
+/dist/
+
+# IDE/editor specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
