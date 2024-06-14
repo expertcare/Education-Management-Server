@@ -28,14 +28,14 @@ app.use(express.json()); // Parse JSON bodies
 app.use(cors()); // Enable CORS
 
 // Routes
-app.use("/", courseRoutes);
-app.use("/usersData", userDataRoutes);
-app.use("/student_schedule", studentScheduleRoutes);
-app.use("/notifications", notificationRoutes);
-app.use("/contacts", contactRoutes);
-app.use("/assignments", assignmentRoutes);
-app.use("/attendance", attendanceRoutes);
-app.use("/submissions", submissionRoutes);
+app.use("/api/", courseRoutes);
+app.use("/api/usersData", userDataRoutes);
+app.use("/api/student_schedule", studentScheduleRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/contacts", contactRoutes);
+app.use("/api/assignments", assignmentRoutes);
+app.use("/api/attendance", attendanceRoutes);
+app.use("/api/submissions", submissionRoutes);
 
 // Start the server
 app.listen(PORT, () => {
