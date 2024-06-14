@@ -23,7 +23,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://education-management-app-react-atharv.vercel.app",
+      // "https://education-management-app-react-atharv.vercel.app",
     ],
     methods: ["POST", "GET", "PUT", "DELETE"],
     credentials: true,
