@@ -21,7 +21,10 @@ const URL = process.env.MONGODB_URI;
 // Middleware my changes ----abhi
 app.use(
   cors({
-    origin: ["https://education-management-app-react-atharv.vercel.app"],
+    origin: [
+      "https://education-management-app-react-atharv.vercel.app",
+      "http://localhost:5173",
+    ],
     methods: ["POST", "GET", "PUT", "DELETE"],
     credentials: true,
   })
