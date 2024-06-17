@@ -20,6 +20,7 @@ const getAllAssignments = async (req, res) => {
 // Controller to add a new assignment
 const addAssignment = async (req, res) => {
   const assignment = new Assignment({
+    userId: req.body.userId,
     section: req.body.section,
     title: req.body.title,
     description: req.body.description,
