@@ -22,9 +22,8 @@ const URL = process.env.MONGODB_URI;
 app.use(
   cors({
     origin: [
-      // "http://localhost:5173",
-      // "https://education-management-app-react-atharv.vercel.app",
-      "https://education-management-server-ruby.vercel.app",
+      "http://localhost:5173",
+      "https://education-management-app-react-atharv.vercel.app",
     ],
     methods: ["POST", "GET", "PUT", "DELETE"],
     credentials: true,
