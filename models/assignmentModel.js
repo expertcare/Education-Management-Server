@@ -1,10 +1,6 @@
 import mongoose from "mongoose";
 
 const assignmentSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    required: true,
-  },
   section: {
     type: String,
     required: true,
