@@ -1,9 +1,11 @@
 import Assignment from "../models/assignmentModel.js";
 
-// Controller to get all assignments
+// Controller to get all assignments for a specific user
 const getAllAssignments = async (req, res) => {
+  const userId = req.query.userId; // Assuming userId is passed in query params
+
   try {
-    const assignments = await Assignment.find();
+    const assignments = await Assignment.find({ userId });
 
     // Format dueDate property in assignments before sending to frontend
     const formattedAssignments = assignments.map((assignment) => ({
@@ -19,12 +21,16 @@ const getAllAssignments = async (req, res) => {
 
 // Controller to add a new assignment
 const addAssignment = async (req, res) => {
+  const { section, title, description, dueDate, userId } = req.body;
+
   const assignment = new Assignment({
-    section: req.body.section,
-    title: req.body.title,
-    description: req.body.description,
-    dueDate: req.body.dueDate,
+    section,
+    title,
+    description,
+    dueDate,
+    userId, // Assign the userId received from the request body
   });
+
   try {
     const newAssignment = await assignment.save();
 
@@ -39,19 +45,21 @@ const addAssignment = async (req, res) => {
 
 // Controller to update an existing assignment
 const updateAssignment = async (req, res) => {
+  const { section, title, description, dueDate } = req.body;
+
   try {
-    const updateAssignment = await Assignment.findByIdAndUpdate(
+    const updatedAssignment = await Assignment.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      { section, title, description, dueDate },
       { new: true }
     );
 
-    // Format dueDate property in updateAssignment before sending to frontend
-    updateAssignment.dueDate = updateAssignment.dueDate
+    // Format dueDate property in updatedAssignment before sending to frontend
+    updatedAssignment.dueDate = updatedAssignment.dueDate
       .toISOString()
       .split("T")[0];
 
-    res.json(updateAssignment);
+    res.json(updatedAssignment);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -61,7 +69,7 @@ const updateAssignment = async (req, res) => {
 const deleteAssignment = async (req, res) => {
   try {
     await Assignment.findByIdAndDelete(req.params.id);
-    res.json({ message: "Course deleted successfully" });
+    res.json({ message: "Assignment deleted successfully" });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
