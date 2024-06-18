@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import bodyParser from "body-parser";
 import courseRoutes from "./routes/courseRoutes.js";
 import userDataRoutes from "./routes/userDataRoutes.js";
 import studentScheduleRoutes from "./routes/studentScheduleRoutes.js";
@@ -15,8 +16,11 @@ import submissionRoutes from "./routes/submissionRoutes.js";
 dotenv.config();
 
 const app = express();
+
 const PORT = process.env.PORT || 5000;
 const URL = process.env.MONGODB_URI;
+
+app.use(bodyParser.json({ limit: "50mb" })); // Increase limit as needed
 
 // Middleware my changes ----abhi
 app.use(
