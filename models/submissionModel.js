@@ -1,4 +1,3 @@
-// models/submissionModel.js
 import mongoose from "mongoose";
 
 const submissionSchema = new mongoose.Schema({
@@ -8,6 +7,10 @@ const submissionSchema = new mongoose.Schema({
   fileUrl: {
     type: String,
     required: true,
+  },
+  submissionDate: {
+    type: Date,
+    default: Date.now,
   },
 });
 

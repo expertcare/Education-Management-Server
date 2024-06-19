@@ -2,6 +2,7 @@ import multer from "multer";
 import cloudinary from "../utils/cloudinary.js";
 import Submission from "../models/submissionModel.js";
 
+// Multer configuration for file upload
 const upload = multer({
   storage: multer.diskStorage({}), // No longer needed to store locally
   fileFilter: function (req, file, cb) {
@@ -13,6 +14,7 @@ const upload = multer({
   },
 }).single("file");
 
+// Controller function to handle submission creation
 export const createSubmission = async (req, res) => {
   try {
     upload(req, res, async function (err) {
@@ -30,12 +32,14 @@ export const createSubmission = async (req, res) => {
       // Save submission details to database
       const { assignmentId, userName, userId } = req.body;
       const fileUrl = result.secure_url; // Uploaded file URL from Cloudinary
+      const submissionDate = new Date(); // Current date and time
 
       const newSubmission = new Submission({
         assignmentId,
         userName,
         userId,
-        fileUrl, // Store the file URL instead of file path
+        fileUrl,
+        submissionDate, // Add current submission date
       });
 
       await newSubmission.save();
