@@ -4,10 +4,10 @@ import path from "path";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(process.cwd(), "uploads")); // Adjust path using process.cwd() for Vercel
+    cb(null, "./uploads/"); // Save uploaded files to the "uploads" directory
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
+    cb(null, Date.now() + path.extname(file.originalname)); // Rename file with current timestamp + original extension
   },
 });
 
@@ -26,15 +26,18 @@ export const createSubmission = async (req, res) => {
   try {
     upload(req, res, async function (err) {
       if (err instanceof multer.MulterError) {
+        // A Multer error occurred when uploading
         console.error("Multer error:", err);
         return res.status(500).json({ error: "File upload error" });
       } else if (err) {
+        // An unknown error occurred
         console.error("Unknown error:", err);
         return res.status(500).json({ error: "Unknown error" });
       }
 
+      // File upload successful, save submission details to database
       const { assignmentId, userName, userId } = req.body;
-      const file = req.file.path;
+      const file = req.file.path; // Uploaded file path
 
       const newSubmission = new Submission({
         assignmentId,
