@@ -59,10 +59,7 @@ app.get("/api/submissions/:id", (req, res) => {
   const submissionId = req.params.id;
   // Retrieve file path from database or wherever it's stored
   // In this example, assuming submissions are stored with unique file names
-  const filePath = path.join(
-    uploadsDirectory,
-    `submission_${submissionId}.pdf`
-  );
+  const filePath = path.join(uploadsDirectory, `${submissionId}`);
 
   // Serve the file
   res.sendFile(filePath);
