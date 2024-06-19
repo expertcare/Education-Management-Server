@@ -11,6 +11,8 @@ import contactRoutes from "./routes/contactRoutes.js";
 import assignmentRoutes from "./routes/assignmentRoutes.js";
 import attendanceRoutes from "./routes/attendanceRoutes.js";
 import submissionRoutes from "./routes/submissionRoutes.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -42,6 +44,29 @@ mongoose
 // // Middleware
 // app.use(express.json()); // Parse JSON bodies
 // app.use(cors()); // Enable CORS
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Define the directory where uploaded files are stored
+const uploadsDirectory = path.join(__dirname, "uploads");
+
+// Serve uploaded files statically
+app.use("/uploads", express.static(uploadsDirectory));
+
+// Example route to get a specific file by ID
+app.get("/api/submissions/:id", (req, res) => {
+  const submissionId = req.params.id;
+  // Retrieve file path from database or wherever it's stored
+  // In this example, assuming submissions are stored with unique file names
+  const filePath = path.join(
+    uploadsDirectory,
+    `submission_${submissionId}.pdf`
+  );
+
+  // Serve the file
+  res.sendFile(filePath);
+});
 
 // Routes
 app.use("/api/", courseRoutes);
