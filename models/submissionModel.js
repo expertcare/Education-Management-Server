@@ -1,10 +1,11 @@
+// models/submissionModel.js
 import mongoose from "mongoose";
 
 const submissionSchema = new mongoose.Schema({
   assignmentId: String,
   userName: String,
   userId: String,
-  file: {
+  fileUrl: {
     type: String,
     required: true,
   },
