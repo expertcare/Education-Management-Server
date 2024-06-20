@@ -1,5 +1,3 @@
-// controllers/todoController.js
-
 import TodoItem from "../models/todoItemModel.js";
 
 // GET all todo items
@@ -29,8 +27,9 @@ export const getTodoItemById = async (req, res) => {
 // POST a new todo item
 export const addTodoItem = async (req, res) => {
   const { name, dueDate } = req.body;
-  const newTodoItem = new TodoItem({ name, dueDate });
   try {
+    const newTodoItem = new TodoItem({ name, dueDate });
+    newTodoItem.id = newTodoItem._id.toString(); // Convert _id to string and assign to id field
     const savedTodoItem = await newTodoItem.save();
     res.status(201).json(savedTodoItem);
   } catch (error) {
