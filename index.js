@@ -11,6 +11,7 @@ import contactRoutes from "./routes/contactRoutes.js";
 import assignmentRoutes from "./routes/assignmentRoutes.js";
 import attendanceRoutes from "./routes/attendanceRoutes.js";
 import submissionRoutes from "./routes/submissionRoutes.js";
+import todoRoutes from "./routes/todoRoutes.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -48,6 +49,7 @@ app.use("/api/contacts", contactRoutes);
 app.use("/api/assignments", assignmentRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/submissions", submissionRoutes);
+app.use("/api/todoItems", todoRoutes);
 
 // Start the server
 app.listen(PORT, () => {
