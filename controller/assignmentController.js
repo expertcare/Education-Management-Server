@@ -41,18 +41,24 @@ const addAssignment = async (req, res) => {
 // Controller to update an existing assignment
 const updateAssignment = async (req, res) => {
   try {
-    const updateAssignment = await Assignment.findByIdAndUpdate(
+    const updateData = {
+      ...req.body,
+      // Ensure dueDate is updated properly
+      dueDate: new Date(req.body.dueDate),
+    };
+
+    const updatedAssignment = await Assignment.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true }
     );
 
-    // Format dueDate property in updateAssignment before sending to frontend
-    updateAssignment.dueDate = updateAssignment.dueDate
+    // Format dueDate property in updatedAssignment before sending to frontend
+    updatedAssignment.dueDate = updatedAssignment.dueDate
       .toISOString()
       .split("T")[0];
 
-    res.json(updateAssignment);
+    res.json(updatedAssignment);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -62,7 +68,7 @@ const updateAssignment = async (req, res) => {
 const deleteAssignment = async (req, res) => {
   try {
     await Assignment.findByIdAndDelete(req.params.id);
-    res.json({ message: "Course deleted successfully" });
+    res.json({ message: "Assignment deleted successfully" });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
