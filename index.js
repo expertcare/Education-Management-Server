@@ -13,6 +13,7 @@ import attendanceRoutes from "./routes/attendanceRoutes.js";
 import submissionRoutes from "./routes/submissionRoutes.js";
 import todoRoutes from "./routes/todoRoutes.js";
 import gradesRoutes from "./routes/gradesRoutes.js";
+import questionRoutes from "./routes/questionRoutes.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -52,6 +53,7 @@ app.use("/api/attendance", attendanceRoutes);
 app.use("/api/submissions", submissionRoutes);
 app.use("/api/grades", gradesRoutes);
 app.use("/api/todoItems", todoRoutes);
+app.use("/api/questions", questionRoutes);
 
 // Start the server
 app.listen(PORT, () => {
