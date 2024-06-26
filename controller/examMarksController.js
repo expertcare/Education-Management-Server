@@ -4,6 +4,7 @@ import ExamMarks from "../models/examMarksModel.js";
 import Question from "../models/questionModel.js";
 
 // Store exam answers with marks and percentage
+
 export const storeExamAnswers = async (req, res) => {
   const { studentId, courseName, answers, marks } = req.body;
 
@@ -41,6 +42,7 @@ export const storeExamAnswers = async (req, res) => {
 };
 
 // Get exam marks for a specific student and course
+
 export const getExamMarks = async (req, res) => {
   const { studentId, courseName } = req.params;
 
@@ -60,6 +62,27 @@ export const getExamMarks = async (req, res) => {
     console.error("Error fetching exam marks:", error);
     res.status(500).json({
       message: "Failed to fetch exam marks. Please try again later.",
+    });
+  }
+};
+
+//Get all exam marks details
+
+export const getAllExamMarks = async (req, res) => {
+  try {
+    //Find all exam marks in mongoDB
+    const allExamMarksDetails = await ExamMarks.find();
+
+    if (!allExamMarksDetails || allExamMarksDetails.length === 0) {
+      return res.status(200).json({ message: "No exam marks found" });
+    }
+
+    res.status(200).json(allExamMarksDetails);
+  } catch (error) {
+    console.error("Error fetching all exam marks details:", error);
+    res.status(500).json({
+      message:
+        "Failed to fetch all exam marks details. Please try again later.",
     });
   }
 };
