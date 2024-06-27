@@ -5,6 +5,7 @@ import {
   getUserById,
   getUserNameById,
   getUsers,
+  login,
   updateUser,
 } from "../controller/userDataController.js";
 
@@ -27,5 +28,8 @@ router.delete("/:id", deleteUser);
 
 //Get user name by ID
 router.get("/:id/name", getUserNameById); // New route to get user's name by ID
+
+// Login route
+router.post("/login", login);
 
 export default router;

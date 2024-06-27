@@ -12,6 +12,16 @@ export const getAllNotifications = async (req, res) => {
   }
 };
 
+//Get Notification by role
+export const getNotificationByRole = async (req, res) => {
+  try {
+    const notifications = await Notification.find({ role: req.params.role });
+    res.json(notifications);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Add a new notification
 export const addNotification = async (req, res) => {
   const notification = new Notification(req.body);

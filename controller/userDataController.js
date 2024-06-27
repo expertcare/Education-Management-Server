@@ -77,3 +77,39 @@ export const getUserNameById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// Authenticate user login
+export const login = async (req, res) => {
+  const { username, password, role } = req.body;
+
+  try {
+    // Find user with matching username and role
+    const user = await UsersData.findOne({ username, role });
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    // Check if passwords match
+    if (user.password !== password) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    // Passwords match, send user data without password upon successful login
+    const userToSend = {
+      _id: user._id,
+      username: user.username,
+      role: user.role,
+      fullName: user.fullName,
+      email: user.email,
+      gender: user.gender,
+
+      // Add any other necessary fields except 'password'
+    };
+
+    res.status(200).json(userToSend);
+  } catch (error) {
+    console.error("Error during login:", error);
+    res.status(500).json({ message: "Server error during login" });
+  }
+};
