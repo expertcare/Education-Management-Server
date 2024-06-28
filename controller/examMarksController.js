@@ -86,3 +86,23 @@ export const getAllExamMarks = async (req, res) => {
     });
   }
 };
+
+//Get Exam Marks by Student ID
+
+export const getExamMarksById = async (req, res) => {
+  const { studentId } = req.params;
+  try {
+    // Find exam marks in MongoDB
+    const examMarks = await ExamMarks.find({ studentId });
+    if (!examMarks) {
+      return res.status(200).json({ message: "Exam marks not found" });
+    }
+    res.status(200).json(examMarks);
+  } catch (error) {
+    console.error("Error fetching exam marks by student id:", error);
+    res.status(500).json({
+      message:
+        "Failed to fetch exam marks by student id. Please try again later.",
+    });
+  }
+};

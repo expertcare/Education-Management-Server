@@ -25,4 +25,33 @@ const getAttendance = async (req, res) => {
   }
 };
 
-export { handleAttendance, getAttendance };
+// Function to get attendance record by student id
+
+// Function to get attendance record by student id
+const getAttendanceByStudentId = async (req, res) => {
+  const studentId = req.params.studentId; // Extract student ID from request parameters
+  try {
+    const attendanceRecord = await Attendance.find({
+      "students.id": studentId,
+    }).select({
+      "students.$": 1,
+      date: 1,
+      schedules: 1,
+    });
+
+    if (!attendanceRecord) {
+      return res.status(404).json({
+        message: "Attendance record not found",
+      });
+    }
+
+    res.status(200).json(attendanceRecord);
+  } catch (error) {
+    console.error("Error fetching attendance record:", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export { handleAttendance, getAttendance, getAttendanceByStudentId };

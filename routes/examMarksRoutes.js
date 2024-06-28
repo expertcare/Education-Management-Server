@@ -2,6 +2,7 @@ import express from "express";
 import {
   getAllExamMarks,
   getExamMarks,
+  getExamMarksById,
   storeExamAnswers,
 } from "../controller/examMarksController.js";
 
@@ -15,5 +16,8 @@ router.get("/:studentId/:courseName", getExamMarks);
 
 // GET request to retrive all exam marks
 router.get("/", getAllExamMarks);
+
+// GET request to fetch exam marks by student ID
+router.get("/:studentId", getExamMarksById);
 
 export default router;

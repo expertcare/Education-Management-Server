@@ -4,7 +4,7 @@ export const getAllCourses = async (req, res) => {
   try {
     const courses = await Course.find();
     res.json(courses);
-  } catch (error) { 
+  } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
@@ -40,6 +40,16 @@ export const deleteCourse = async (req, res) => {
   try {
     await Course.findByIdAndDelete(req.params.id);
     res.json({ message: "Course deleted successfully" });
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+export const getCourseByFacultyName = async (req, res) => {
+  const { faculty } = req.params;
+  try {
+    const courses = await Course.find({ faculty });
+    res.json(courses);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

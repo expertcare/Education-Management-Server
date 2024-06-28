@@ -62,3 +62,15 @@ export const getSubmissions = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// Controller dunction to handel the fetching of submissions by user ID
+
+export const getUserSubmissions = async (req, res) => {
+  try {
+    const submissions = await Submission.find({ userId: req.params.userId });
+    res.json(submissions);
+  } catch (error) {
+    console.error("Error fetching submissions:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};

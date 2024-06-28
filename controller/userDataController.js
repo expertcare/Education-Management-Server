@@ -1,17 +1,20 @@
 import UsersData from "../models/UsersData.js";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { validationResult } from "express-validator";
 import StatusCodes from "http-status-codes";
 
 export const createUser = async (req, res) => {
   const { username, role, email, fullName, gender, password } = req.body;
 
   try {
-    const existingUser = await UsersData.findOne({ $or: [{ email }, { username }] });
+    const existingUser = await UsersData.findOne({
+      $or: [{ email }, { username }],
+    });
     if (existingUser) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         message: "User with this email or username already registered.",
-        success: false
+        success: false,
       });
     }
 
@@ -34,12 +37,13 @@ export const createUser = async (req, res) => {
     res.status(StatusCodes.OK).json({
       id: savedUserData._id,
       ...responseData,
-      success: true
+      success: true,
     });
-
   } catch (error) {
     console.error("Error creating user:", error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Server error during user creation", success: false });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error during user creation", success: false });
   }
 };
 
@@ -116,12 +120,16 @@ export const login = async (req, res) => {
     const user = await UsersData.findOne({ username, role });
 
     if (!user) {
-      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Invalid credentials", success: false });
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: "Invalid credentials", success: false });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Invalid password", success: false });
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: "Invalid password", success: false });
     }
 
     const token = jwt.sign(
@@ -137,14 +145,69 @@ export const login = async (req, res) => {
         email: user.email,
         fullName: user.fullName,
         gender: user.gender,
-        role: user.role
+        role: user.role,
       },
       token,
-      success: true
+      success: true,
     });
-
   } catch (error) {
     console.error("Error during login:", error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Server error during login", success: false });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error during login", success: false });
+  }
+};
+
+// Change password
+
+export const changePassword = async (req, res) => {
+  const { id } = req.params;
+  const { currentPassword, newPassword } = req.body;
+
+  try {
+    // Validate inputs
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ errors: errors.array() });
+    }
+
+    // Find user by ID
+    const user = await UsersData.findById(id);
+    if (!user) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "User not found", success: false });
+    }
+
+    // Check if current password is correct
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+    if (!isPasswordValid) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: "Current password is incorrect", success: false });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update user's password
+    user.password = hashedPassword;
+    await user.save();
+
+    // Optionally, you may want to invalidate existing tokens here
+
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "Password updated successfully", success: true });
+  } catch (error) {
+    console.error("Error changing password:", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error during password change", success: false });
   }
 };

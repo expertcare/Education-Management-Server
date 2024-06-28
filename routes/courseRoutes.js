@@ -3,6 +3,7 @@ import {
   addCourse,
   deleteCourse,
   getAllCourses,
+  getCourseByFacultyName,
   updateCourse,
 } from "../controller/courseController.js";
 
@@ -10,6 +11,9 @@ const router = express.Router();
 
 // Get all courses
 router.get("/courses", getAllCourses);
+
+//Get Courses by faculty ID
+router.get("/courses/:faculty", getCourseByFacultyName);
 
 // Add a new course
 router.post("/courses", addCourse);

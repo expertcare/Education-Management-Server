@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  changePassword,
   createUser,
   deleteUser,
   getUserById,
@@ -31,5 +32,9 @@ router.get("/:id/name", getUserNameById); // New route to get user's name by ID
 
 // Login route
 router.post("/login", login);
+
+//Change the password
+
+router.put("/:id/change-password", changePassword);
 
 export default router;
