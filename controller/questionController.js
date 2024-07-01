@@ -1,6 +1,7 @@
 // controllers/question.controller.js
 
 import Question from "../models/questionModel.js";
+import XLSX from "xlsx";
 
 // Create a new question
 export const createQuestion = async (req, res) => {
@@ -58,13 +59,83 @@ export const deleteQuestion = async (req, res) => {
   }
 };
 
+// Delete all questions of a course
+export const deleteQuestionByCourse = async (req, res) => {
+  const { course } = req.params;
+
+  try {
+    console.log(course, "coursename");
+
+    const result = await Question.deleteMany({ courseName: { $in: course } });
+    res.json({
+      message: `Deleted ${
+        result.deletedCount
+      } questions for courses: ${course.join(", ")}`,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // Get questions by courseName
 export const getQuestionsByCourse = async (req, res) => {
   const { courseName } = req.params;
+  console.log(courseName, "coursename");
   try {
     const questions = await Question.find({ courseName });
     res.json(questions);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+//Get question by faculty name
+export const getQuestionsByFaculty = async (req, res) => {
+  const { courseFaculty } = req.params;
+  try {
+    const questions = await Question.find({ courseFaculty });
+    res.json(questions);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Import excel file and get stored json in database
+
+export const uploadExcel = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+    const sheetName = workbook.SheetNames[0]; // Assuming only one sheet
+    const worksheet = workbook.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json(worksheet, { raw: true });
+
+    //Validate and transform each item in jsonData before inserting
+    const validateData = jsonData.map((item) => {
+      //Convert options from a comma-seprated string to an array
+
+      const optionsArray = item.options
+        .split(",")
+        .map((option) => option.trim());
+
+      return {
+        question: item.question,
+        options: optionsArray,
+        correctAnswer: parseInt(item.correctAnswer), //Convert correct answer to number
+        courseName: item.courseName,
+        courseFaculty: item.courseFaculty,
+      };
+    });
+
+    // Save JSON data to MongoDB
+    await Question.insertMany(validateData);
+
+    res.json({ message: "File uploaded and data saved to mongoDB" });
+  } catch (error) {
+    console.error("Error uploading file: ", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
