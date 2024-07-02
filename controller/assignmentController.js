@@ -17,12 +17,32 @@ const getAllAssignments = async (req, res) => {
   }
 };
 
+// Controller for get assignment based on the course
+export const getAssignmentByCourse = async (req, res) => {
+  try {
+    const { courseName } = req.params;
+    const assignments = await Assignment.find({ courseName });
+
+    // Format dueDate property in assignments before sending to frontend
+    const formattedAssignments = assignments.map((assignment) => ({
+      ...assignment._doc,
+      dueDate: assignment.dueDate.toISOString().split("T")[0], // Format as "YYYY-MM-DD"
+    }));
+
+    res.status(200).json(formattedAssignments);
+  } catch (error) {
+    console.error("Error fetching assignments:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Controller to add a new assignment
 const addAssignment = async (req, res) => {
   const assignment = new Assignment({
     userId: req.body.userId,
+    courseName: req.body.courseName,
     section: req.body.section,
-    title: req.body.title,
+
     description: req.body.description,
     dueDate: req.body.dueDate,
   });

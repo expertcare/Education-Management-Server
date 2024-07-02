@@ -16,6 +16,14 @@ export const addCourse = async (req, res) => {
   });
 
   try {
+    const checkCourse = await Course.findOne({
+      name: req.body.name,
+    });
+
+    if (checkCourse) {
+      return res.status(400).json({ message: "Course already exists" });
+    }
+
     const savedCourse = await newCourse.save();
     res.status(201).json(savedCourse);
   } catch (error) {

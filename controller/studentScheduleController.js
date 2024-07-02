@@ -14,7 +14,18 @@ const getAllStudentSchedules = async (req, res) => {
 // Add a new student schedule
 const addStudentSchedule = async (req, res) => {
   const studentSchedule = new StudentSchedule(req.body);
+
   try {
+    const existingTime = await StudentSchedule.findOne({
+      time: studentSchedule.time,
+    });
+
+    if (existingTime) {
+      return res.status(400).json({
+        message: "You have already added schedule for this period",
+      });
+    }
+
     const newStudentSchedule = await studentSchedule.save();
     res.status(201).json(newStudentSchedule);
   } catch (error) {

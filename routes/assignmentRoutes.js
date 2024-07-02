@@ -4,6 +4,7 @@ import {
   deleteAssignment,
   getAllAssignments,
   updateAssignment,
+  getAssignmentByCourse,
 } from "../controller/assignmentController.js";
 
 const router = express.Router();
@@ -12,6 +13,9 @@ const router = express.Router();
 
 // Get all assignments
 router.get("/", getAllAssignments);
+
+//Get assignment by course name
+router.get("/:courseName", getAssignmentByCourse);
 
 // Add a new assignment
 router.post("/", addAssignment);

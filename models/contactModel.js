@@ -13,6 +13,14 @@ const contactSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now, //Default value is the current timestamp
+  },
+  responded: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Contact = mongoose.model("Contact", contactSchema);
