@@ -3,8 +3,7 @@
 import ExamMarks from "../models/examMarksModel.js";
 import Question from "../models/questionModel.js";
 
-// Store exam answers with marks and percentage
-
+/// Store exam answers with marks and percentage
 export const storeExamAnswers = async (req, res) => {
   const { studentId, courseName, answers, marks } = req.body;
 
@@ -21,13 +20,36 @@ export const storeExamAnswers = async (req, res) => {
     const totalMarks = questions.length;
     const percentage = ((marks / totalMarks) * 100).toFixed(2);
 
+    // Determine pass/fail status
+    const passFailStatus = percentage >= 40 ? "Pass" : "Fail";
+
+    // Determine grade
+    let grade;
+    if (percentage >= 90) {
+      grade = "A+";
+    } else if (percentage >= 80) {
+      grade = "A";
+    } else if (percentage >= 70) {
+      grade = "B+";
+    } else if (percentage >= 60) {
+      grade = "B";
+    } else if (percentage >= 50) {
+      grade = "C";
+    } else if (percentage >= 40) {
+      grade = "D";
+    } else {
+      grade = "F";
+    }
+
     // Store exam answers in MongoDB
     const examMarks = new ExamMarks({
       studentId,
       courseName,
       answers,
       marks,
-      percentage, // Include percentage in the data to be stored
+      percentage,
+      passFailStatus,
+      grade,
     });
 
     await examMarks.save();
@@ -42,7 +64,6 @@ export const storeExamAnswers = async (req, res) => {
 };
 
 // Get exam marks for a specific student and course
-
 export const getExamMarks = async (req, res) => {
   const { studentId, courseName } = req.params;
 
@@ -56,7 +77,9 @@ export const getExamMarks = async (req, res) => {
 
     res.status(200).json({
       marks: examMarks.marks,
-      percentage: examMarks.percentage, // Also send percentage to frontend
+      percentage: examMarks.percentage,
+      passFailStatus: examMarks.passFailStatus,
+      grade: examMarks.grade,
     });
   } catch (error) {
     console.error("Error fetching exam marks:", error);

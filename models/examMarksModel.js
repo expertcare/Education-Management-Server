@@ -1,3 +1,5 @@
+// models/examMarksModel.js
+
 import mongoose from "mongoose";
 
 const ExamMarksSchema = new mongoose.Schema({
@@ -24,6 +26,16 @@ const ExamMarksSchema = new mongoose.Schema({
   studentId: {
     type: String,
     required: true,
+  },
+  passFailStatus: {
+    type: String,
+    required: true,
+    enum: ["Pass", "Fail"],
+  },
+  grade: {
+    type: String,
+    required: true,
+    enum: ["A+", "A", "B+", "B", "C", "D", "F"],
   },
 });
 
