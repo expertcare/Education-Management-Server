@@ -3,6 +3,7 @@ import {
   changePassword,
   createUser,
   deleteUser,
+  getAllUsersFullNameByRole,
   getUserById,
   getUserNameById,
   getUsers,
@@ -17,6 +18,9 @@ router.post("/", createUser);
 
 // Get all users
 router.get("/", getUsers);
+
+//Get all users FullName based on role
+router.get("/role/:role", getAllUsersFullNameByRole);
 
 // Get a user by ID
 router.get("/:id", getUserById);

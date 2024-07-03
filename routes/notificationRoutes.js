@@ -4,6 +4,7 @@ import {
   deleteNotification,
   getAllNotifications,
   getNotificationByRole,
+  getNotificationByUser,
 } from "../controller/notificationController.js";
 
 const router = express.Router();
@@ -15,6 +16,9 @@ router.get("/", getAllNotifications);
 
 //Get Notifications by Role
 router.get("/:role", getNotificationByRole);
+
+//Get Notification by user
+router.get("/user/:selectedUser", getNotificationByUser);
 
 // Add a new notification
 router.post("/", addNotification);

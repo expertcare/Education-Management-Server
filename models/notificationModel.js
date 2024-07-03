@@ -14,6 +14,9 @@ const notificationSchema = new mongoose.Schema({
     enum: ["student", "faculty"],
     required: true,
   },
+  selectedUser: {
+    type: String,
+  },
 });
 
 const Notification = mongoose.model("Notification", notificationSchema);

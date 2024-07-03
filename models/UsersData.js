@@ -27,6 +27,7 @@ const userDataSchema = new mongoose.Schema({
     required: true,
     enum: ["male", "female"],
   },
+  isActive: { type: Boolean, default: true }, //New field for activation
   // Add more fields as needed
 });
 

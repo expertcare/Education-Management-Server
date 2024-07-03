@@ -5,7 +5,7 @@ import Notification from "../models/notificationModel.js";
 // Get all notifications
 export const getAllNotifications = async (req, res) => {
   try {
-    const notifications = await Notification.find();
+    const notifications = await Notification.find({ selectedUser: "" });
     res.json(notifications);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -15,7 +15,35 @@ export const getAllNotifications = async (req, res) => {
 //Get Notification by role
 export const getNotificationByRole = async (req, res) => {
   try {
-    const notifications = await Notification.find({ role: req.params.role });
+    const notifications = await Notification.find({
+      role: req.params.role,
+      selectedUser: "",
+    });
+    res.json(notifications);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+//Get Notification by selected user
+export const getNotificationByUser = async (req, res) => {
+  try {
+    const notifications = await Notification.find({
+      selectedUser: req.params.selectedUser,
+    });
+    res.json(notifications);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get notification to indivaidual student
+export const getNotificationToStudent = async (req, res) => {
+  try {
+    const notifications = await Notification.find({
+      role: "student",
+      to: req.params.id,
+    });
     res.json(notifications);
   } catch (error) {
     res.status(500).json({ message: error.message });

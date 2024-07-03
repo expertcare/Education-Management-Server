@@ -5,7 +5,7 @@ import { validationResult } from "express-validator";
 import StatusCodes from "http-status-codes";
 
 export const createUser = async (req, res) => {
-  const { username, role, email, fullName, gender, password } = req.body;
+  const { username, password, role, email, fullName, gender } = req.body;
 
   try {
     const existingUser = await UsersData.findOne({
@@ -22,11 +22,12 @@ export const createUser = async (req, res) => {
 
     const newUser = new UsersData({
       username,
+      password: hashedPassword,
       role,
       email,
       fullName,
       gender,
-      password: hashedPassword,
+      isActive: true,
     });
 
     const savedUserData = await newUser.save();
@@ -113,6 +114,23 @@ export const getUserNameById = async (req, res) => {
   }
 };
 
+// Get all users FullName based on role
+export const getAllUsersFullNameByRole = async (req, res) => {
+  try {
+    const users = await UsersData.find({ role: req.params.role });
+    if (!users) {
+      return res.status(404).json({ message: "Users not found" });
+    }
+    const modifiedUsers = users.map((user) => ({
+      id: user._id,
+      fullName: user.fullName,
+    }));
+    res.status(200).json(modifiedUsers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const login = async (req, res) => {
   const { username, password, role } = req.body;
 
@@ -123,6 +141,13 @@ export const login = async (req, res) => {
       return res
         .status(StatusCodes.UNAUTHORIZED)
         .json({ message: "Invalid credentials", success: false });
+    }
+
+    if (!user.isActive) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        message: "You are not active, please contact admin",
+        success: false,
+      });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
