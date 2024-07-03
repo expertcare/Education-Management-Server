@@ -13,12 +13,10 @@ const handleAttendance = async (req, res) => {
     });
 
     if (existingAttendance) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Attendance already submitted for this date, time, and subject",
-        });
+      return res.status(400).json({
+        message:
+          "Attendance already submitted for this date, time, and subject",
+      });
     }
 
     const newAttendance = new Attendance(attendanceData);

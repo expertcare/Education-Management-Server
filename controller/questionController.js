@@ -8,6 +8,18 @@ export const createQuestion = async (req, res) => {
   try {
     const { question, options, correctAnswer, courseName, courseFaculty } =
       req.body;
+
+    // check if the question already exists for the same course and faculty
+    const existingQuestion = await Question.findOne({
+      question,
+      courseName,
+      courseFaculty,
+    });
+
+    if (existingQuestion) {
+      return res.status(400).json({ message: "Question already exists" });
+    }
+
     const newQuestion = await Question.create({
       question,
       options,
