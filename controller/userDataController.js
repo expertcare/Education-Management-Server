@@ -3,6 +3,29 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { validationResult } from "express-validator";
 import StatusCodes from "http-status-codes";
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+
+// Load environment variables from .env file
+dotenv.config();
+
+// Configure nodemailer transporter
+// const transporter = nodemailer.createTransport({
+//   host: "live.smtp.mailtrap.io",
+//   port: 587,
+//   auth: {
+//     user: "api", // Your Mailtrap SMTP username
+//     pass: "97266073199728c07fb0cc3a5e1efdaa", // Your Mailtrap SMTP password
+//   },
+// });
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "arm3cse@gmail.com", // Gmail email address
+    pass: "gbdcodlfflsmnoku", // App-Specific Password
+  },
+});
 
 export const createUser = async (req, res) => {
   const { username, password, role, email, fullName, gender } = req.body;
@@ -31,6 +54,44 @@ export const createUser = async (req, res) => {
     });
 
     const savedUserData = await newUser.save();
+
+    // Send email notification
+    const mailOptions = {
+      // from: '"Mailtrap Test" <mailtrap@demomailtrap.com>',
+      from: '"EDUCATION MANAGEMENT" <arm3cse@gmail.com>',
+      to: email, // Use the user's email here
+      subject: "Account created successfully",
+      // text: `Hello ${fullName},\n\nYour account has been created successfully.`,
+      html: `
+        <html>
+          <body>
+            <h2>Welcome to EDUCATION MANAGEMENT APP</h2>
+            <p>Hello ${fullName},</p>
+            <p>Your role is ${role}</p>
+            <p>Your account has been created successfully!</p>
+            <p>Your username: ${username}</p>
+            <p>Your password: ${password}</p>
+            <p>The Website link as follows</p>
+            <p>https://education-management-app-react-atharv.vercel.app/</p>
+            <p>Best regards,</p>
+            <p>The EDUCATION MANAGEMENT Team</p>
+          </body>
+        </html>
+      `,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+        // Handle error response to client if needed
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+          message: "Error sending email",
+          success: false,
+        });
+      } else {
+        console.log("Email sent:", info.response);
+      }
+    });
 
     const responseData = savedUserData.toObject();
     delete responseData.password;

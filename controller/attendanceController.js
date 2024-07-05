@@ -8,7 +8,7 @@ const handleAttendance = async (req, res) => {
     // Check if attendance already exists for the same date, time, and subject
     const existingAttendance = await Attendance.findOne({
       date: attendanceData.date,
-      "schedules.time": attendanceData.schedules[0].time, // Assuming schedules is an array and we're checking the first item
+      "schedules.time": attendanceData.schedules[0].time, // schedules is an array and checking the first item
       "schedules.subject": attendanceData.schedules[0].subject,
     });
 
@@ -66,4 +66,53 @@ const getAttendanceByStudentId = async (req, res) => {
   }
 };
 
-export { handleAttendance, getAttendance, getAttendanceByStudentId };
+// Controller function to fetch attendance records by subject and calculate attendance details day-wise
+const getAttendanceBySubject = async (req, res) => {
+  const teacher = req.params.teacher;
+
+  try {
+    // Fetch attendance records for the given teacher
+    const attendanceRecords = await Attendance.find({
+      "schedules.teacher": teacher,
+    });
+
+    // Calculate attendance details day-wise
+    const attendanceDataWithDetails = attendanceRecords.map((record) => {
+      const date = record.date;
+      const schedules = record.schedules.map((schedule) => ({
+        time: schedule.time,
+        subject: schedule.subject,
+        teacher: schedule.teacher,
+      }));
+      const totalStudents = record.students.length;
+      let presentCount = 0;
+
+      // Count number of students marked as present for the current date
+      record.students.forEach((student) => {
+        if (student.attendance === "present") {
+          presentCount++;
+        }
+      });
+
+      // Calculate attendance percentage for the current date
+      const attendancePercentage = (presentCount / totalStudents) * 100;
+
+      return {
+        date: date,
+        schedules: schedules,
+        attendancePercentage: attendancePercentage.toFixed(2), // Round to 2 decimal places
+      };
+    });
+
+    res.json(attendanceDataWithDetails);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export {
+  handleAttendance,
+  getAttendance,
+  getAttendanceByStudentId,
+  getAttendanceBySubject,
+};

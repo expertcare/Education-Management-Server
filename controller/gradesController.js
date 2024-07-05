@@ -33,3 +33,15 @@ export const getAllGrades = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch grades" });
   }
 };
+
+// Controller for get assignments that who has graded by
+export const getAssignmentGradedByFaculty = async (req, res) => {
+  try {
+    const { faculty } = req.params;
+    const grades = await Grade.find({ gradedBy: faculty });
+    res.status(200).json(grades);
+  } catch (error) {
+    console.error("Error fetching grades:", error);
+    res.status(500).json({ message: "Failed to fetch grades" });
+  }
+};
