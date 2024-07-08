@@ -4,6 +4,8 @@ import {
   createUser,
   deleteUser,
   getAllUsersFullNameByRole,
+  getFacultyCount,
+  getStudentCount,
   getUserById,
   getUserNameById,
   getUsers,
@@ -24,6 +26,12 @@ router.get("/role/:role", getAllUsersFullNameByRole);
 
 // Get a user by ID
 router.get("/:id", getUserById);
+
+// Get students count
+router.get("/students/count", getStudentCount);
+
+// Get faculty count
+router.get("/faculty/count", getFacultyCount);
 
 // Update a user by ID
 router.put("/:id", updateUser);

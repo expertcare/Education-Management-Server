@@ -192,6 +192,26 @@ export const getAllUsersFullNameByRole = async (req, res) => {
   }
 };
 
+// Get a count of students
+export const getStudentCount = async (req, res) => {
+  try {
+    const count = await UsersData.countDocuments({ role: "student" });
+    res.status(200).json({ count: count });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get a count of faculties
+export const getFacultyCount = async (req, res) => {
+  try {
+    const count = await UsersData.countDocuments({ role: "faculty" });
+    res.status(200).json({ count: count });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const login = async (req, res) => {
   const { username, password, role } = req.body;
 
