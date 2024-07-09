@@ -117,10 +117,37 @@ export const getExamMarksById = async (req, res) => {
   try {
     // Find exam marks in MongoDB
     const examMarks = await ExamMarks.find({ studentId });
-    if (!examMarks) {
+
+    if (!examMarks || examMarks.length === 0) {
       return res.status(200).json({ message: "Exam marks not found" });
     }
-    res.status(200).json(examMarks);
+
+    // Calculate total percentage and number of subjects
+    let totalPercentage = 0;
+    let hasFailedSubject = false; // Flag to track if any subject has failed
+    const numberOfSubjects = examMarks.length;
+
+    examMarks.forEach((mark) => {
+      totalPercentage += mark.percentage;
+      if (mark.passFailStatus === "Fail") {
+        hasFailedSubject = true;
+      }
+    });
+
+    // Calculate final percentage as average percentage
+    const finalPercentage = totalPercentage / numberOfSubjects;
+
+    // Determine final status
+    let finalStatus = finalPercentage >= 40 ? "Pass" : "Fail";
+    if (hasFailedSubject) {
+      finalStatus = "Fail";
+    }
+
+    res.status(200).json({
+      finalPercentage,
+      finalStatus,
+      examMarks, // Optionally, you can return the examMarks array as well
+    });
   } catch (error) {
     console.error("Error fetching exam marks by student id:", error);
     res.status(500).json({

@@ -212,6 +212,45 @@ export const getFacultyCount = async (req, res) => {
   }
 };
 
+//Controller function to handel couunting males and females
+export const countGender = async (req, res) => {
+  try {
+    const users = await UsersData.find({
+      isActive: true,
+      role: { $ne: "admin" },
+    }); // Only for active users and Exclude admin role
+    let maleCount = 0;
+    let femaleCount = 0;
+
+    //Count males and females
+    users.forEach((user) => {
+      if (user.gender === "male") {
+        maleCount++;
+      } else if (user.gender === "female") {
+        femaleCount++;
+      }
+    });
+
+    const totalCount = maleCount + femaleCount;
+    const malePercentage = (maleCount / totalCount) * 100;
+    const femalePercentage = (femaleCount / totalCount) * 100;
+
+    res.status(200).json({
+      success: true,
+      maleCount,
+      femaleCount,
+      malePercentage,
+      femalePercentage,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error counting genders",
+      error: error.message,
+    });
+  }
+};
+
 export const login = async (req, res) => {
   const { username, password, role } = req.body;
 

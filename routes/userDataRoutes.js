@@ -1,6 +1,7 @@
 import express from "express";
 import {
   changePassword,
+  countGender,
   createUser,
   deleteUser,
   getAllUsersFullNameByRole,
@@ -17,6 +18,9 @@ const router = express.Router();
 
 // Create a new user
 router.post("/", createUser);
+
+// Get sex ratio
+router.get("/gender-count", countGender);
 
 // Get all users
 router.get("/", getUsers);

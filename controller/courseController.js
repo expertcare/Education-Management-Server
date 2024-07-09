@@ -9,6 +9,15 @@ export const getAllCourses = async (req, res) => {
   }
 };
 
+export const getCoursesCount = async (req, res) => {
+  try {
+    const coursesCount = await Course.countDocuments();
+    res.json(coursesCount);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const addCourse = async (req, res) => {
   const newCourse = new Course({
     name: req.body.name,

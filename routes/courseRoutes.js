@@ -4,10 +4,14 @@ import {
   deleteCourse,
   getAllCourses,
   getCourseByFacultyName,
+  getCoursesCount,
   updateCourse,
 } from "../controller/courseController.js";
 
 const router = express.Router();
+
+// Get courses count
+router.get("/courses/count", getCoursesCount);
 
 // Get all courses
 router.get("/courses", getAllCourses);

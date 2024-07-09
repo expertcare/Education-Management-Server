@@ -17,6 +17,11 @@ const notificationSchema = new mongoose.Schema({
   selectedUser: {
     type: String,
   },
+  date: {
+    type: Date,
+    required: true,
+    default: Date.now, // Default value is current date and time
+  },
 });
 
 const Notification = mongoose.model("Notification", notificationSchema);
