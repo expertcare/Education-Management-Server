@@ -16,7 +16,7 @@ router.get("/courses/count", getCoursesCount);
 // Get all courses
 router.get("/courses", getAllCourses);
 
-//Get Courses by faculty ID
+//Get Courses by faculty name
 router.get("/courses/:faculty", getCourseByFacultyName);
 
 // Add a new course

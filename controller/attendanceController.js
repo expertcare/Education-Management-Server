@@ -1,4 +1,5 @@
 import Attendance from "../models/attendanceModel.js";
+import Course from "../models/Course.js";
 
 // Function to handle attendance submission
 const handleAttendance = async (req, res) => {
@@ -110,9 +111,59 @@ const getAttendanceBySubject = async (req, res) => {
   }
 };
 
+// Controller function to fetch all courses data with attendance percentages
+const getAllCoursesWithAttendance = async (req, res) => {
+  try {
+    // Fetch all courses from the database
+    const courses = await Course.find({});
+
+    // Prepare an array to hold course data with attendance details
+    const coursesWithAttendance = [];
+
+    // Iterate through each course
+    for (let course of courses) {
+      // Find attendance records related to the current course
+      const attendanceRecords = await Attendance.find({
+        "schedules.subject": course.name, // Assuming 'name' field in Course matches 'subject' in Attendance
+      });
+
+      // Calculate attendance percentage for the current course
+      let totalAttendancePercentage = 0;
+      if (attendanceRecords.length > 0) {
+        const totalRecords = attendanceRecords.length;
+        const totalAttendancePercentages = attendanceRecords.reduce(
+          (acc, record) => {
+            const presentCount = record.students.filter(
+              (student) => student.attendance === "present"
+            ).length;
+            const totalStudents = record.students.length;
+            const attendancePercentage = (presentCount / totalStudents) * 100;
+            return acc + attendancePercentage;
+          },
+          0
+        );
+        totalAttendancePercentage = totalAttendancePercentages / totalRecords;
+      }
+
+      // Add course details along with attendance percentage to the array
+      coursesWithAttendance.push({
+        name: course.name,
+        code: course.code,
+        department: course.department,
+        attendancePercentage: totalAttendancePercentage.toFixed(2), // Round to 2 decimal places
+      });
+    }
+
+    res.json(coursesWithAttendance);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 export {
   handleAttendance,
   getAttendance,
   getAttendanceByStudentId,
   getAttendanceBySubject,
+  getAllCoursesWithAttendance,
 };
